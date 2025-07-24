@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Box Packer</title>
+		<link rel="stylesheet" href="./style.css">
+
+		<script src="main.js" defer></script>
+		<script src="./js/themes.js" defer></script>
+		<script src="./js/upgrades.js" defer></script>
+		<script src="./js/shooter.js" defer></script>
+
+</script>
+	</head>
+	<body>
+		<div class="header">
+			<div class="title">
+				<h1>Box Packer</h1>
+			</div>
+			
+			<div class="settings" title="Settings">
+				<span class="tooltip">Settings</span>
+				<span class="game-icons--gears" id="settings"></span>
+			</div>
+		</div>
+
+		<div class="levelAnchor" title="Every level increases your tape reloading speed.">
+				<center><h3>Level <span id="level">1</span></h3></center>
+				<div class="xp-bar">
+					<div class="xp-progress" id="experience"></div>
+				</div>
+		</div>
+
+		
+
+		<div class="ui tooltips-enabled"> <!--ui start-->
+			<div class="sidebar">
+				<div class="money">
+					$<span id="dollars">0</span>
+					<button id="shipBoxes"><span class="tooltip">Deliver boxes to make money!</span>Ship Boxes!</button>
+				</div>
+				<h3>Resources</h3>
+				<div class="resource-menu">
+					<div class="resource" id="tape">
+						<span class="tooltip">Tape helps you pack boxes.<br>Refills when empty.<br>Click to reload faster!</span>
+						<div class="resource-name">Tape</div>
+						<div class="resource-amount"><span id="tapeGun">100%</span></div>
+					</div>
+					<div class="resource" id="boxes">
+						<span class="tooltip">Ship boxes to make money!</span>
+						<div class="resource-name" title=""><span class="game-icons--cardboard-box-small"></span> Boxes</div>
+						<div class="resource-amount"><span id="boxCount">0</span></div>
+					</div>
+					<div class="resource" id="shelves">
+						<span class="tooltip">Out of floorspace? Build shelves to hold more boxes!</span>
+						<div class="resource-name" title="">Shelving</div>
+						<div class="resource-amount"><span id="shelfCount">0</span></div>
+					</div>
+				</div>
+				<h3>Utility</h3>
+				<div class="utility-menu">
+					<div class="resource" id="workers">
+						<span class="tooltip">Who wants to carry boxes by themselves?</span>
+						<div class="resource-name" title="">Packers</div>
+						<div class="resource-amount"><span id="packerCount">0</span></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="clicker" id="clickerArea">
+				<div class="boxAnchor ring-animation">
+					<button title="Click to Pack Box">
+						<span id="packBox" class="game-icons--cardboard-box"></span>
+					</button>
+				</div>
+			</div>
+
+			<div class="rightbar">
+				<div class="label">Upgrades</div>
+				<div class="upgrade">
+					<span class="tooltip">
+						Level: <span id="upgrade1-level">0</span><br>
+						Tape Length: <span id="upgrade1-stat">30</span> yards
+					</span>
+					<div class="upgrade-name">
+						Bigger Tape
+					</div>
+					<div class="upgrade-desc">
+						More tape, more boxes!
+					</div>
+					<div class="upgrade-cost">
+						<span id="upgrade1-cost">$0.50</span>
+					</div>
+				</div>
+				<div class="upgrade">
+					<span class="tooltip">Level: <span id="upgrade2-level">0</span><br>
+					Chance: <span id="upgrade2-stat">0</span>%
+					</span>
+					<div class="upgrade-name">
+						Medium Boxes
+					</div>
+					<div class="upgrade-desc">
+						Save time on packing! Use larger boxes!
+					</div>
+					<div class="upgrade-cost">
+						<span id="upgrade2-cost">$1.00</span>
+					</div>
+				</div>
+				<div class="upgrade">
+					<span class="tooltip">Level: <span id="upgrade3-level">0</span><br>
+					Packers: <span id="upgrade3-stat">0</span>
+					</span>
+					<div class="upgrade-name">
+						Packers
+					</div>
+					<div class="upgrade-desc">
+						The boxes are getting to be a bit much...
+					</div>
+					<div class="upgrade-cost">
+						<span id="upgrade3-cost">$1.00</span>
+					</div>
+				</div>
+			</div>
+		</div> <!--ui end-->
+
+		<dialog id="settingsDialog">
+			<h2>Settings <span id="closeSettings">×</span></h2>
+			<p>Autosave?: <button id="autoSave">ON</button></p>
+			<p>Theme: <button id="toggleTheme">Toggle Theme</button></p>
+			<p>Toggle tooltips: <button id="toggleTooltips">ON</button></p>
+			<p>Toggle Animations: <button id="toggleAnim">ON</button></p>
+			<hr>
+			<p><button id="clear">Clear All Data</button><button id="save">Save Game</button></p>
+		</dialog>
+		<script>
+			// Settings
+const settings = {
+	numtype: "scientific"
+};
+// Initial game data
+function getInitData () {
+	return {
+		tapeUse: 1,
+		tapeLength: 30, // yards
+		tapeLengthMax: 30,
+		tapeRefill: 5,
+		tapeRefillSpeed: 1000,
+		box: 0,
+		boxPerClick: 1,
+		boxSize: 1,
+		boxMaxSize: 1,
+		dollars: 0,
+		boxPrice: 0.01,
+		maxBoxes: 100,
+		shipAmt: 10,
+		medBoxChance: 0,
+		lrgBoxChance: 0,
+	}
+}
+
+// Game runtime data (clone of initData + extras)
+var gameData = structuredClone(getInitData());
+gameData.level = 1;
+gameData.xp = 0;
+gameData.packer = 0;
+
+// Runtime state
+let tapeRefillInterval = null;
+let animationOn = true;
+let tooltipsOn = true;
+
+// Helpers & Utiliies
+function update(id, content) {
+	document.getElementById(id).innerHTML = content;
+}
+
+function fillBar(id, currentAmt, max, color1, color2) {
+	const percent = (currentAmt / max) * 100;
+	document.getElementById(id).style.background = `linear-gradient(to right, ${color1} ${percent}%, ${color2} ${percent}%)`;
+}
+const clamp = (number, min, max) => Math.min(Math.max(number, min), max);
+
+function numFormat(number, places, type) {
+	if (number === 0) return "0";
+	const exponent = Math.floor(Math.log10(number));
+	const mantissa = number / Math.pow(10, exponent);
+	if (exponent < 9) return parseFloat(number.toFixed(places)).toLocaleString();
+	if (type === "scientific") return mantissa.toFixed(2) + "e" + exponent;
+	if (type === "engineering") return (Math.pow(10, exponent % 3) * mantissa).toFixed(2) + "e" + Math.floor(exponent / 3) * 3;
+}
+
+function randbetween(min, max) {
+	return Math.random() * (max - min) + min;
+}
+const toggleClickerIcon = (add, remove) => {
+	const clicker = document.getElementById("packBox");
+	clicker.classList.add(add);
+	clicker.classList.remove(remove);
+};
+
+function clickEffect() {
+	// Clicker DOM Effects
+	const clicker = document.getElementById("packBox");
+	toggleClickerIcon("game-icons--cardboard-box-closed", "game-icons--cardboard-box");
+	if (gameData.boxSize > 1) {
+		clicker.style.filter = "hue-rotate(90deg) brightness(1.5)";
+		clicker.style.zoom = "150%";
+		setTimeout(() => {
+			clicker.style.filter = "";
+			clicker.style.zoom = "100%";
+		}, 400);
+	};
+	setTimeout(() => {
+		toggleClickerIcon("game-icons--cardboard-box", "game-icons--cardboard-box-closed");
+	}, 400);
+}
+
+// Game Logic
+function tapeGunRefill(percent = 1) {
+	if (gameData.tapeLength >= gameData.tapeLengthMax) return;
+	gameData.tapeLength = clamp(gameData.tapeLength + gameData.tapeRefill * percent, 0, gameData.tapeLengthMax);
+	update("tapeGun", `${numFormat(
+      clamp((gameData.tapeLength / gameData.tapeLengthMax) * 100, 0, 100),
+      0,
+      settings.numtype
+    )}%`);
+	fillBar("tape", gameData.tapeLength, gameData.tapeLengthMax, "gold", "transparent");
+}
+
+function tapeGun(percent = 1) {
+	gameData.tapeLength = clamp(gameData.tapeLength - gameData.tapeUse * (gameData.boxSize*percent), 0, gameData.tapeLengthMax);
+	update("tapeGun", `${numFormat(
+      clamp((gameData.tapeLength / gameData.tapeLengthMax) * 100, 0, 100),
+      1,
+      settings.numtype
+    )}%`);
+	fillBar("tape", gameData.tapeLength, gameData.tapeLengthMax, "gold", "transparent");
+
+	if (gameData.tapeLength === 0 && tapeRefillInterval === null) {
+		document.getElementById("packBox").classList.add("disabled");
+		document.getElementById("tape").style.cursor = "pointer";
+		tapeRefillInterval = setInterval(() => {
+			tapeGunRefill();
+			if (gameData.tapeLength >= gameData.tapeLengthMax) {
+				clearInterval(tapeRefillInterval);
+				tapeRefillInterval = null;
+				document.getElementById("packBox").classList.remove("disabled");
+				document.getElementById("tape").style.cursor = "default";
+			}
+		}, gameData.tapeRefillSpeed - (gameData.tapeRefillSpeed * gameData.level) / 100);
+	}
+}
+
+function chooseBox(x) {
+	if (x < gameData.lrgBoxChance) {
+		return 3;
+	} else if (x < (gameData.lrgBoxChance + gameData.medBoxChance)) {
+		return 2;
+	} else {
+		return 1;
+	};
+}
+
+// Box-related
+function packBox(percent = 1) {
+	if (gameData.tapeLength > 0 && gameData.box < gameData.maxBoxes) {
+
+		gameData.boxSize = chooseBox(randbetween(0, 99));
+
+		if (percent < 1) {
+			gameData.box = gameData.box + (gameData.boxSize*percent)
+		} else {
+		gameData.box = clamp((gameData.box + gameData.boxSize) * gameData.boxPerClick, 0, gameData.maxBoxes)};
+		
+
+		update("boxCount", numFormat(gameData.box, 2, settings.numtype));
+		fillBar("boxes", gameData.box, gameData.maxBoxes, "rgb(188, 143, 143)", "rgba(255, 255, 55, 0.5)");
+		tapeGun(percent);
+		levelCounter(gameData.boxSize);
+	}
+}
+
+function shipBox() {
+	const earned = gameData.boxPrice * gameData.shipAmt;
+	if (gameData.box >= gameData.shipAmt) {
+		gameData.dollars += earned;
+		gameData.box = clamp(gameData.box - gameData.shipAmt, 0, gameData.maxBoxes);
+		levelCounter(gameData.shipAmt * 0.5);
+	} else {
+		gameData.dollars += gameData.box * gameData.boxPrice;
+		levelCounter(gameData.box * gameData.boxSize * 0.5);
+		gameData.box = 0;
+	}
+	update("boxCount", gameData.box);
+	update("dollars", numFormat(gameData.dollars, 2, settings.numtype));
+	fillBar("boxes", gameData.box, gameData.maxBoxes, "rgb(188, 143, 143)", "rgba(255, 255, 55, 0.5)");
+}
+
+// Leveling & Experience
+function levelCounter(xpGain) {
+	gameData.xp += xpGain;
+	const base = 10 * Math.pow(3, gameData.level);
+	const xpNeeded = base * Math.sqrt(gameData.level * 2);
+	if (gameData.xp >= xpNeeded) {
+		gameData.xp -= xpNeeded;
+		gameData.level += 1;
+		update("level", gameData.level);
+	}
+	const percent = (gameData.xp / xpNeeded) * 100;
+	update("experience", `<span class="xp-slash">(${clamp(gameData.xp.toFixed(0), 0, xpNeeded)}/${xpNeeded.toFixed(0)})</span>
+     <span class="xp-percent">${Math.floor(percent)}%</span>`);
+	const xpBar = document.querySelector(".xp-progress");
+	if (xpBar) xpBar.style.width = `${percent}%`;
+}
+
+
+
+// Dialogs
+function dialogOpen(id) {
+	document.getElementById(id).showModal();
+}
+
+// Settings
+function saveGame() {
+	localStorage.setItem("saveFile",JSON.stringify(gameData));
+	console.log("Game saved!");
+}
+
+function loadGame() {
+	if (localStorage.getItem("saveFile") === null) {
+		gameData.level = 1;
+		gameData.xp = 0;
+	} else {
+		Object.assign(gameData, JSON.parse(localStorage.getItem("saveFile")));
+	}
+}
+
+function clearData() {
+	localStorage.removeItem("saveFile");
+	Object.assign(gameData, getInitData());
+	gameData.level = 1;
+	gameData.xp = 0;
+	refreshUI();
+}
+
+function toggleAnim() {
+	const button = document.querySelector(".boxAnchor button");
+	const toggleButton = document.getElementById("toggleAnim");
+	animationOn = !animationOn;
+	if (animationOn) {
+		button.classList.add("ring-animation");
+		toggleButton.textContent = "ON";
+	} else {
+		button.classList.remove("ring-animation");
+		toggleButton.textContent = "OFF";
+	}
+}
+
+function toggleTooltips() {
+	const ui = document.querySelector(".ui");
+	const toggleButton = document.getElementById("toggleTooltips");
+
+	tooltipsOn = !tooltipsOn;
+	if (tooltipsOn) {
+		ui.classList.add("tooltips-enabled");
+		toggleButton.textContent = "ON";
+	} else {
+		ui.classList.remove("tooltips-enabled");
+		toggleButton.textContent = "OFF";
+	}
+}
+
+function closeSettings() {
+	document.getElementById("settingsDialog").close();
+}
+
+// Event Listeners
+document.addEventListener("DOMContentLoaded", () => {
+	loadGame();
+	refreshUI(); 
+
+	if (gameData.level > 5) {
+		randomSpawnLoop(15000/(gameData.level/3),10/(gameData.level/3))};
+
+	const clickHandlers = {
+		//game
+		tape: () => {
+			if (tapeRefillInterval !== null) tapeGunRefill(0.1);
+		},
+		shipBoxes: shipBox,
+		packBox: () => {packBox(); clickEffect();},
+
+		//settings
+		settings: () => {
+			dialogOpen("settingsDialog");
+		},
+		toggleTheme: toggleTheme,
+		toggleTooltips: toggleTooltips,
+		toggleAnim: toggleAnim,
+		closeSettings: closeSettings,
+		save: saveGame,
+		clear: clearData,
+	};
+
+	Object.entries(clickHandlers).forEach(([id, handler]) => {
+		const el = document.getElementById(id);
+		if (el) el.addEventListener("click", handler);
+	});
+
+	document.querySelectorAll(".upgrade").forEach((el, i) => {
+		el.addEventListener("click", () => purchaseUpgrade(i));
+	});
+
+	setInterval(() => {
+		for (let i = 0; i < upgrades.length; i++) {
+			if (gameData.level === upgrades[i].unlock) {
+			addUpgrade(i);
+		}
+	}
+
+		if (gameData.packer > 0 && tapeRefillInterval === null) {
+		packBox(gameData.packer*0.01);}
+	}, 1000);
+});
+
+function refreshUI() {
+	update("boxCount", numFormat(gameData.box, 0, settings.numtype));
+	update("dollars", numFormat(gameData.dollars, 2, settings.numtype));
+	update("level", gameData.level);
+
+	update("tapeGun", `${numFormat(clamp((gameData.tapeLength / gameData.tapeLengthMax) * 100, 0, 100), 0, settings.numtype)}%`);
+	fillBar("tape", gameData.tapeLength, gameData.tapeLengthMax, "gold", "transparent");
+
+	fillBar("boxes", gameData.box, gameData.maxBoxes, "rgb(188, 143, 143)", "rgba(255, 255, 55, 0.5)");
+
+	levelCounter(0); // This will recalculate XP bar from current values
+}
+
+
+//Hotkeys
+document.addEventListener("keyup", (event) => {
+	if (event.key === "z" && tapeRefillInterval === null) {
+		packBox();
+		clickEffect();
+	}
+	if (event.key === "x") {
+		shipBox();
+	}
+	if (event.key === "c" && tapeRefillInterval !== null) {
+		tapeGunRefill(0.1);
+	}
+});
+
+// Upgrades
+	const upgrades = [{
+	id: "upgrade1",
+	name: "Tape Capacity",
+	unlock: 1, //unlock at gameData.level
+	stat: 30, //yards
+	baseCost: 0.5,
+	level: 0,
+	maxLevel: 50,
+	costMultiplier: 1.5,
+	effect: function() {
+		gameData.tapeLengthMax += 10;
+		this.stat += 10;
+	},
+}, {
+	id: "upgrade2",
+	name: "Medium Boxes",
+	unlock: 1,
+	stat: 0, //medBoxChance
+	baseCost: 1.0,
+	level: 0,
+	maxLevel: 2,
+	costMultiplier: 3.0,
+	effect: function() {
+		gameData.boxMaxSize = 2;
+		gameData.medBoxChance += 10;
+		this.stat += 10;
+	},
+}, {
+	id: "upgrade3",
+	name: "Packers",
+	unlock: 1,
+	stat: 0, //packers = 0.2*packBox()
+	baseCost: 1.0,
+	level: 0,
+	maxLevel: 10,
+	costMultiplier: 1.75,
+	effect: function() {
+		gameData.packer += 1;
+		this.stat += 1;
+		document.getElementById("packerCount").textContent = gameData.packer;
+	},
+}, {
+	id: "upgrade4",
+	name: "Shelving",
+	unlock: 3,
+	stat: 0, //amount of shelving (adds +100 to maxBoxes)
+	baseCost: 5.0,
+	level: 0,
+	maxLevel: 10,
+	costMultiplier: 5.0,
+	effect: function() {
+		gameData.shelving += 1
+		gameData.maxBoxes = 100 + gameData.shelving*100;
+		this.stat += 1;
+	},
+}, ];
+
+function purchaseUpgrade(index) {
+	const upgrade = upgrades[index];
+	if (upgrade.level >= upgrade.maxLevel) {
+		alert(`${upgrade.name} is fully upgraded!`);
+		return;
+	}
+	const currentCost = upgrade.baseCost * Math.pow(upgrade.costMultiplier, upgrade.level);
+	if (gameData.dollars >= currentCost) {
+		gameData.dollars -= currentCost;
+		upgrade.level++;
+		upgrade.effect();
+		update("dollars", numFormat(gameData.dollars, 2, settings.numtype));
+		document.getElementById(`${upgrade.id}-cost`).innerText = upgrade.level >= upgrade.maxLevel ? "MAX" : `$${(upgrade.baseCost * Math.pow(upgrade.costMultiplier, upgrade.level)).toFixed(2)}`;
+		const levelEl = document.getElementById(`${upgrade.id}-level`);
+		if (levelEl) levelEl.innerText = `${upgrade.level}/${upgrade.maxLevel}`;
+		const statEl = document.getElementById(`${upgrade.id}-stat`)
+		if (statEl) statEl.innerText = `${upgrade.stat}`
+	} else {
+		alert("Not enough money!");
+	}
+}
+
+function buildUpgradeElement(upgrade) {
+	const div = document.createElement("div");
+	div.classList.add('upgrade');
+
+	div.textContent = `
+	<span class="tooltip">
+		Level: <span id="${upgrade.id}-level">${upgrade.level}/${upgrade.maxLevel}</span><br>
+		Stat: <span id="${upgrade.id}-stat">${upgrade.stat}</span>${upgrade.id === 'upgrade1' ? ' yards' : '%'}
+	</span>
+	<div class="upgrade-name">${upgrade.name}</div>
+	<div class="upgrade-desc">${upgrade.desc || ''}</div>
+	<div class="upgrade-cost">
+	<span id="${upgrade.id}-cost">
+	${upgrade.level >= upgrade.maxLevel 
+		? 'MAX' 
+		: '$' + (upgrade.baseCost * Math.pow(upgrade.costMultiplier, upgrade.level)).toFixed(2)
+	}
+	</span>
+    </div>
+	`
+}
+
+function addUpgrade(index) {
+	const upgrade = upgrades[index];
+
+	// only insert when the unlock condition is met
+	if (gameData.level < upgrade.unlock) return;
+
+	// avoid duplicates
+	if (document.getElementById(`${upgrade.id}-level`)) return;
+	const rightbar = document.querySelector('.rightbar');
+	const newUpgradeEl = buildUpgradeElement(upgrade);
+
+	rightbar.appendChild(newUpgradeEl);
+}
+
+		</script>
+	</body>
+</html>
+
+
+<!--<div class="upgrade">
+					<span class="tooltip">Level: <span id="upgrade4-level">1</span><br>
+					Max Boxes: <span id="upgrade4-stat">0</span>%
+					</span>
+					<div class="upgrade-name">
+						Shelving
+					</div>
+					<div class="upgrade-desc">
+						Why keep everything on the floor?
+					</div>
+					<div class="upgrade-cost">
+						<span id="upgrade4-cost">$5.00</span>
+					</div>
+				</div>-->

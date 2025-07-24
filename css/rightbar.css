@@ -1,0 +1,56 @@
+.rightbar {
+	width: 15vw;
+	background: var(--rightbar-bg-color);
+	flex: 1 1 auto;
+	padding: 1vw;
+}
+
+.rightbar .label {
+	font-size: 2em;
+	font-weight: bold;
+	margin-bottom: .5em;
+}
+
+/*----- Upgrades -----*/
+.upgrades-menu {
+	overflow: auto;
+}
+
+.upgrade {
+	display: flex;
+	flex-direction: column;
+	padding: 0.3em;
+	border: 1px solid rgba(0, 60, 0, 0.75);
+	background: var(--upgrade-bg-color);
+	height: fit-content;
+	line-height: 1.5;
+	color: var(--upgrade-text-color);
+	margin-bottom: 0.5em;
+}
+
+.upgrade-name {
+	text-align: center;
+	font-weight: bold;
+	border-bottom: 1px solid white;
+	padding: 0.2em 0;
+}
+
+.upgrade-desc {
+	padding: 0.5em;
+}
+
+.upgrade-cost {
+	padding: 0.1em;
+	text-align: center;
+	background: var(--upgrade-cost-bg-color);
+	color: var(--upgrade-cost-text-color)
+}
+
+.upgrade-cost:hover {
+	filter: brightness(80%);
+}
+
+.upgrade.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

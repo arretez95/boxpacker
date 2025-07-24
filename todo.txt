@@ -1,0 +1,54 @@
+TO-DO LIST
+
+Story
+	-- Level 1: You just started a new package delivery service! Can your teeny, home-run business can compete with today's biggest conglomerates?
+	-- Level 2: You've leveled up! With your accumulated experience, you can refill tape faster, 
+	-- Level 5: Your friends have started recommending you to their friends. Still not much happenin' though.
+	-- Level 10: Word has spread through the locale about your success. Pity some people are happy to take advantage of a good thing. (unlock thieves)
+
+Add to Settings:
+	-- switch themes toggle/dropdown 
+		-- save & load previously selected theme.
+	-- custom themes?
+	-- Autosave Time & Toggle
+	
+Features:
+	-- be able to name company
+
+Prestige?:
+	
+More Upgrades:
+	-- Purchase Tape Rolls
+		-- doubles tape capacity
+	-- Purchase Tape Gun
+		-- Tape Gun Refill Speed
+		-- Tape Gun Refill Amount
+	-- Large Boxes
+	-- Employees
+		-- Efficiency
+	-- boxes & dollars per tick
+	-- Delivery vans/trucks/semis
+	-- Artifacts
+		-- damaged boxes occasionally drop rare items
+		-- get artifacts from catching thieves
+	-- thieves steal boxes or money
+		-- catch them for bonuses
+	-- Manufacturing:
+		-- Tape Manufacturing
+			-- lower all tape upgrade costs
+			-- auto-increase tapeLength, tapeLengthMax, tapeRefillAmount, and tapeRefillSpeed.
+		-- Box Manufacturing
+			-- lower all box upgrade costs
+			-- auto-increase packingRate, 
+		-- Auto Manufacturing
+			-- lower all shipping upgrade costs
+			-- auto-increase ship amount
+
+More Segments:
+	-- box turret (shoots nets to catch thieves)
+	-- dogs: chase away thieves
+	-- thieves' "damage" increases based on level
+		"damage" equates to how much boxes or money are taken per thief.
+
+Dialogs:
+	-- Change rightbar to dialogs.

@@ -1,0 +1,80 @@
+body {
+	margin: 0;
+	user-select: none;
+	background: var(--bg-color);
+	color: var(--primary-text-color);
+}
+
+.disabled {
+	pointer-events: none;
+	filter: grayscale(100%) brightness(50%)
+}
+
+/* Text Formats */
+h1, h2, h3, h4, h5 {
+	margin-block: 0;
+}
+
+.invader {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	background-color: red;
+	border: 5px solid black;
+	border-radius: 50%;
+	z-index: 1;
+	transition: transform 4s linear;
+	/* animation: centralSlide 4s linear infinite forwards;
+	--dx: 400px;
+	--dy: ; */
+}
+
+#clickerArea {
+	position: relative;
+	overflow: hidden;
+}
+
+@keyframes centralSlide {
+	to {
+		transform: translate(var(--dx), var(--dy));
+	}
+}
+
+.success {
+	position: fixed;
+	padding: 0.5em;
+	color: var(--success-txt-color);
+	top: 10%;
+	left: 45%;
+	border: 3px solid black;
+	border-radius: 2px;
+	text-align: center;
+	font-weight: bold;
+	height: fit-content;
+	width: 10vw;
+	background: var(--success-color);
+	z-index: 9999;
+	transition: all 0.3s;
+}
+
+.error {
+	position: fixed;
+	padding: 0.5em;
+	color: var(--error-txt-color);
+	top: 10%;
+	left: 45%;
+	border: 3px solid black;
+	border-radius: 2px;
+	text-align: center;
+	font-weight: bold;
+	height: fit-content;
+	width: 10vw;
+	background: var(--error-color);
+	z-index: 9999;
+	transition: all 0.3s;
+}
+
+.success:after, .error:after {
+	content: 'x';
+	float: right;
+}

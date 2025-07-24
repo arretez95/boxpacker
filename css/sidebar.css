@@ -1,0 +1,64 @@
+/*-------- Left Sidebar --------*/
+.sidebar {
+	background: var(--side-bg-color);
+	flex: 1 0 auto;
+	width: 11vw;
+	padding: 1vw;
+}
+
+	/* Money */
+	.money {
+		color: var(--money-color);
+		font-weight: bold;
+		font-size: 2.5em;
+	}
+
+	.money button {
+		background: var(--money-color);
+		color: var(--side-text-color);
+		padding: 1em;
+		float: right;
+	}
+
+	.money button:hover {
+		background: rgba(0, 60, 0, 0.75)
+	}
+
+	/* Resources */
+	.resource-menu {
+		height: 40vh;
+		overflow: auto;
+		width: 100%;
+		padding: 0.2em;
+	}
+	
+	.resource {
+		display: flex;
+		padding: 1em;
+		border: 1px solid rgba(0, 60, 0, 0.75);
+		justify-content: space-between;
+		background: var(--resource-bg);
+		margin-bottom: 0.5em;
+	}
+
+	.locked {
+		display: none;
+	}
+
+	.resource-name {
+		font-weight: bold;
+		display: flex;
+		align-content: space-between;
+	}
+
+	.resource-name span {
+		margin-right: 0.2em;
+	}
+
+	.resource-amount {
+		float: right;
+	}
+	
+	#tape {
+		background: gold;
+	}

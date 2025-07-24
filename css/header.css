@@ -1,0 +1,90 @@
+.header {
+	position: sticky;
+	top: 0;
+	border-bottom: 1px solid black;
+	text-align: center;
+	background: var(--header-bg-color);
+	color: var(--header-text-color);
+	line-height: 2;
+	display: flex;
+	justify-content: space-between;
+	z-index: 333;
+	height: 75px;
+}
+
+.title {
+	padding: 0.25em 0.5em;
+}
+
+
+.levelAnchor {
+	position: fixed;
+	top: 0;
+	left: 45%;
+	z-index: 400;
+}
+
+.xp-bar {
+	background: black;
+	padding: 0.35em;
+	width: 12em;
+	border-radius: 15px;
+	margin: 0.25em auto;
+	z-index: 1;
+}
+
+.xp-progress {
+	background: var(--upgrade-cost-bg-color);
+	width: 0%;
+	height: 1.5em;
+	padding: 0.2em 0;
+	border-radius: 10px;
+	line-height: 1.5;
+	font-weight: bold;
+	color: white;
+	display: flex;
+	justify-content: space-between;
+	z-index: 1;
+}
+
+.xp-percent {
+	/* float: left; */
+	padding: 0 1em;
+}
+
+.xp-slash {
+	float: right;
+	padding: 0 1em;
+}
+
+/* Settings */
+.settings {
+	position:relative;
+	bottom: 0;
+}
+
+.settings:hover {
+	background: black;
+	border-top-left-radius: 100%;
+}
+#settingsDialog {
+	width: 15vw;
+	user-select: none;
+}
+#settingsDialog button, #settingsDialog select {
+	float: right;
+	margin-left: 0.2em;
+}
+
+#settingsDialog #clear {
+	float: left;
+}
+
+#closeSettings {
+	float: right;
+}
+
+#closeSettings:hover {
+	color: goldenrod;
+	cursor: pointer;
+}

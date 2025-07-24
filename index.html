@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Box Packer</title>
+		<link rel="stylesheet" href="./style.css">
+
+		<script src="main.js" type="module"></script>
+
+</script>
+	</head>
+	<body>
+		<div id="uiContainer">
+		<div class="header">
+			<div class="title">
+				<h1>Box Packer</h1>
+			</div>
+			<div class="settings" title="Settings">
+				<span class="tooltip">Settings</span>
+				<span class="game-icons--gears" id="settings"></span>
+			</div>
+		</div>
+
+		<div class="levelAnchor" title="Every level increases your tape reloading speed.">
+				<center><h3>Level <span id="level">1</span></h3></center>
+				<div class="xp-bar">
+					<div class="xp-progress" id="experience"></div>
+				</div>
+		</div>
+
+		<!-- <div class="success">Success!</div>
+		<div class="error">Error!</div> -->
+
+		<div class="ui tooltips-enabled"> <!--ui start-->
+			<div class="sidebar">
+				<div class="money">
+					$<span id="dollars">0</span>
+					<button id="shipBoxes"><span class="tooltip">Deliver boxes to make money!</span>Ship Boxes!</button>
+				</div>
+				<h3>Resources</h3>
+				<div class="resource-menu"></div>
+				<h3>Utility</h3>
+				<div class="utility-menu">
+				</div>
+			</div>
+
+			<div class="clicker" id="clickerArea">
+				<div class="boxAnchor">
+					<button class="ring-animation" title="Click to Pack Box" tabindex="-1">
+						<span id="packBox" class="game-icons--cardboard-box"></span>
+					</button>
+				</div>
+				<div class="messageBox" id="msgBox">
+				
+				</div>
+			</div>
+
+			<div class="rightbar">
+				<div class="label">Upgrades</div>
+				<div class="upgrades-menu">
+				</div>
+			</div>
+		</div> <!--ui end-->
+
+		<dialog id="settingsDialog">
+			<h2>Settings <span id="closeSettings">×</span></h2>
+			<p>UI Scale:
+				<input type="range" min="50" max="150" value="100" class="slider" id="scaleRange">
+			</p>
+			
+			<p>Autosave?: <button id="autoSave">ON</button></p>
+			<p>Theme: <button id="toggleTheme">Toggle Theme</button></p>
+			<p>Choose Theme: 
+				<select id="themeSelect">
+					<option value="theme-light">Default (Light)</option>
+					<option value="theme-dark">Dark</option>
+					<option value="theme-teal">Teal</option>
+				</select>
+			</p>
+			<p>Toggle Tooltips: <button id="toggleTooltips">ON</button></p>
+			<p>Toggle Animations: <button id="toggleAnim">ON</button></p>
+			<p>&nbsp;</p>
+			<hr>
+			<p><button id="clear">Clear All Data</button><button id="save">Save Game</button></p>
+		</dialog>
+		</div>
+	</body>
+</html>

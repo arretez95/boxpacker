@@ -1,0 +1,45 @@
+.tooltip {
+	display: none;
+	/* format */
+	background: var(--upgrade-bg-color);
+	color: var(--upgrade-text-color);
+	border: 1px solid white;
+	z-index: 100;
+	width: fit-content;
+	max-width: 10vw;
+	height: max-content;
+}
+
+.settings .tooltip {
+	margin-left: -5vw;
+	margin-top: 1vw;
+	padding: 0.2em;
+	position: absolute;
+}
+
+.money .tooltip {
+	margin-left: 6vw;
+	margin-top: -1vw;
+	padding: 1em;
+	position: absolute;
+}
+
+.resource .tooltip {
+	margin-left: 11.5vw;
+	margin-top: -1vw;
+	padding: 1em;
+	position: absolute;
+}
+
+.upgrade .tooltip {
+	width: 10vw;
+	margin-left: -11vw;
+	padding: 1em;
+	position: absolute;
+}
+
+.tooltips-enabled .resource:hover .tooltip,
+.tooltips-enabled .money button:hover .tooltip,
+.tooltips-enabled .upgrade:hover .tooltip, .tooltips-enabled .settings:hover .tooltip {
+	display: block;
+}

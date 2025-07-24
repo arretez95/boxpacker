@@ -1,0 +1,91 @@
+:root {
+	--bg-color: mintcream;
+	--header-bg-color: green;
+	--header-text-color: beige;
+	--side-bg-color: beige;
+	--side-text-color: beige;
+	--rightbar-bg-color: #87a96b;
+	--upgrade-text-color: #eee;
+	--upgrade-bg-color: rgba(20, 80, 0.75);;
+	--upgrade-cost-bg-color: gold;
+	--upgrade-cost-text-color: black;
+	--primary-text-color: black;
+	--money-color: green;
+	--box-color: rgb(188, 143, 143);
+	--box-click-color: rgb(159, 143, 143);
+	--msgbox-bg-color: lightgray;
+	--success-color: green;
+	--success-txt-color: gold;
+	--error-color: darkred;
+	--error-txt-color: gold;
+	--resource-bg: rgba(255, 255, 55, 0.5);
+}
+
+.theme-light { /* default */
+	--bg-color: mintcream;
+	--header-bg-color: green;
+	--header-text-color: beige;
+	--side-bg-color: beige;
+	--side-text-color: beige;
+	--rightbar-bg-color: #87a96b;
+	--upgrade-text-color: #eee;
+	--upgrade-bg-color: rgba(20, 80, 0.75);;
+	--upgrade-cost-bg-color: gold;
+	--upgrade-cost-text-color: black;
+	--primary-text-color: black;
+	--money-color: green;
+	--box-color: rgb(188, 143, 143);
+	--box-click-color: rgb(159, 143, 143);
+	--msgbox-bg-color: lightgray;
+	--success-color: green;
+	--success-txt-color: gold;
+	--error-color: darkred;
+	--error-txt-color: gold;
+	--resource-bg: rgba(255, 255, 55, 0.5);
+}
+
+.theme-dark {
+	--bg-color: #65737e;
+	--header-bg-color: #343d46;
+	--header-text-color: gray;
+	--side-bg-color: #a7adba;
+	--side-text-color: black;
+	--upgrade-text-color: #000;
+	--upgrade-bg-color: #c0c5ce;
+	--upgrade-cost-bg-color: #4f5b66;
+	--upgrade-cost-text-color: #eee;
+	--rightbar-bg-color: #4f5b66;
+	--primary-text-color: black;
+	--money-color: #d3ffce;
+	--box-color: #343d46;
+	--box-click-color: #eee;	
+	--msgbox-bg-color: gray;
+	--success-color: lightgreen;
+	--success-txt-color:black;
+	--error-color: #fa8072	;
+	--error-txt-color: black;
+	--resource-bg: rgba(255, 255, 255, 0.5);
+}
+
+.theme-teal {
+	--bg-color: #033;
+	--header-bg-color: #077;
+	--header-text-color: beige;
+	--side-bg-color: #055;
+	--side-text-color: beige;
+	--upgrade-text-color: #ddd;
+	--upgrade-bg-color: #055;
+	--upgrade-cost-bg-color: #87a96b;
+	--upgrade-cost-text-color: white;
+	--rightbar-bg-color: #458b74;
+	--primary-text-color: black;
+	--money-color: #87a96b;
+	--box-color: #077;
+	--box-click-color: #066;	
+	--msgbox-bg-color: gray;
+	--success-color: lightgreen;
+	--success-txt-color:black;
+	--error-color: #fa8072	;
+	--error-txt-color: black;
+	--resource-bg: rgba(200, 220, 200, 0.5);
+}
